@@ -1,0 +1,3 @@
+/home/luis/Documentos/Tarefas-Semear/Tarefa2/CMakeFiles/edit_cache.dir
+/home/luis/Documentos/Tarefas-Semear/Tarefa2/CMakeFiles/rebuild_cache.dir
+/home/luis/Documentos/Tarefas-Semear/Tarefa2/CMakeFiles/Executable.dir
