@@ -1,9 +1,6 @@
 import cv2
 import numpy as np
 
-def nothing(x):
-  pass
-
 def birds_eye(frame):
 
   #Obtem número de linhas e colunas do frame
@@ -54,6 +51,25 @@ cv2.namedWindow('video',cv2.WINDOW_NORMAL)
 cv2.namedWindow('IMG_BINARIA',cv2.WINDOW_NORMAL)
 cv2.namedWindow('Bird eyes',cv2.WINDOW_NORMAL)
 
+def histogram(bin_img):
+
+  cv2.namedWindow("Histogram",cv2.WINDOW_NORMAL)
+  rows = bin_img.shape[0]
+  cols = bin_img.shape[1]
+  hist = np.zeros([rows,cols,3],dtype=np.uint8)
+  hist[:] = 255
+  count = np.zeros(cols)
+  row_init = int(rows/2)
+  row_fin = rows
+
+  for col in range(int(0.2*cols), int(0.8*cols)):
+    count[col] = int(np.sum(bin_img[row_init:row_fin,col])/255)
+    cv2.circle(hist, (col,int(rows-count[col])),1,(255,0,0),3,8,0)
+    print(count[col])
+
+  cv2.imshow("Histogram", hist)
+  
+
 
 while True:
 
@@ -68,6 +84,8 @@ while True:
   dst = birds_eye(frame)
 
   mask = binary_img(dst)
+
+  histogram(mask)
   
   #Mostra os vídeos na tela
   cv2.imshow("video",frame)
