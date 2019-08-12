@@ -61,13 +61,23 @@ def histogram(bin_img):
   count = np.zeros(cols)
   row_init = int(rows/2)
   row_fin = rows
+  x_medio = 0
+  soma_alt = 0
 
   for col in range(int(0.2*cols), int(0.8*cols)):
     count[col] = int(np.sum(bin_img[row_init:row_fin,col])/255)
     cv2.circle(hist, (col,int(rows-count[col])),1,(255,0,0),3,8,0)
-    print(count[col])
-
+    x_medio += count[col]*col
+    soma_alt += count[col]
   cv2.imshow("Histogram", hist)
+  if soma_alt == 0:
+    return 0
+  else:
+    x_medio /= soma_alt
+    return int(x_medio)
+    
+
+  
   
 
 
@@ -85,7 +95,9 @@ while True:
 
   mask = binary_img(dst)
 
-  histogram(mask)
+  valor = histogram(mask)
+
+  print(valor)
   
   #Mostra os vídeos na tela
   cv2.imshow("video",frame)
