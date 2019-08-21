@@ -53,31 +53,56 @@ cv2.namedWindow('Bird eyes',cv2.WINDOW_NORMAL)
 
 def histogram(bin_img):
 
+  #Cria janela do Histograma
   cv2.namedWindow("Histogram",cv2.WINDOW_NORMAL)
+
+  #Obtem o número de linhas e colunas da imagem
   rows = bin_img.shape[0]
   cols = bin_img.shape[1]
+
+  #Cria uma matriz zerada para a imagem do histograma e 
+  #seta todos os pixels em 255 (cor branca)
   hist = np.zeros([rows,cols,3],dtype=np.uint8)
   hist[:] = 255
+
+  #Cria matriz nula com o número de colunas da imagem
   count = np.zeros(cols)
+
+  #Define o limite superior e inferior no qual a imagem será analisada
   row_init = int(rows/2)
   row_fin = rows
+
+  #Cria variáveis que serão utilizadas na média ponderada
   x_medio = 0
   soma_alt = 0
 
-  for col in range(int(0.2*cols), int(0.8*cols)):
+  #Inicio do loop percorrendo a imagem binária
+  for col in range(int(0.1*cols), int(0.9*cols)):
+
+    #Aloca o número de pontos brancos em determinada coluna na posição do vetor correspondente
     count[col] = int(np.sum(bin_img[row_init:row_fin,col])/255)
+
+    #Desenha o um circulo na altura correspondente ao número de pixels
     cv2.circle(hist, (col,int(rows-count[col])),1,(255,0,0),3,8,0)
-    x_medio += count[col]*col
-    soma_alt += count[col]
-  cv2.imshow("Histogram", hist)
+
+    #Recebe a coluna com maior número de pontos brancos
+    pt_max = np.argmax(count)
+
+    #Percorre o vetor nas proximidades da coluna com mais pontos
+    for i in range(pt_max-30, pt_max+30):
+      x_medio += count[col]*col
+      soma_alt += count[col]
+
+    #Imprime o histograma
+    cv2.imshow("Histogram", hist)
+
+
+  #Realiza a média ponderada e retorna a posição calculada, ou -1 caso não exista nenhum ponto branco.
   if soma_alt == 0:
-    return 0
+    return -1
   else:
     x_medio /= soma_alt
     return int(x_medio)
-    
-
-  
   
 
 
