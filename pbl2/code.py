@@ -99,10 +99,38 @@ def histogram(bin_img):
 
   #Realiza a média ponderada e retorna a posição calculada, ou -1 caso não exista nenhum ponto branco.
   if soma_alt == 0:
-    return -1
+    return [-1,-1]
   else:
     x_medio /= soma_alt
-    return int(x_medio)
+    return [int(x_medio),rows]
+
+  
+def sliding_window(pos,bird_img,bin_img):
+
+  cv2.namedWindow("Sliding Window",cv2.WINDOW_NORMAL)
+  count = np.zeros(bird_img.shape[0])
+
+  slide_img = bird_img.copy()
+
+  for i in range(1,15):
+    pt_sup_esq = [pos[0]-50,pos[1]-15*i]
+    pt_inf_dir = [pos[0]+50,pos[1]+15-15*(i-1)]
+    num = 0
+    dem = 0
+    for j in range(pt_sup_esq[0],pt_inf_dir[0]):
+      if j >= bird_img.shape[0]:
+        continue
+      count[j] = int(np.sum(bin_img[pt_sup_esq[1]:pt_inf_dir[1],j])/255)
+      num += count[j]*j
+      dem += count[j]
+    if dem != 0:
+      media = int(num / dem)
+      pt_sup_esq[0] = media-50
+      pt_inf_dir[0] = media+50
+      cv2.rectangle(slide_img,tuple(pt_sup_esq),tuple(pt_inf_dir),(255,0,100),3)
+
+  cv2.imshow("Sliding Window",slide_img)
+
   
 
 
@@ -121,6 +149,8 @@ while True:
   mask = binary_img(dst)
 
   valor = histogram(mask)
+
+  sliding_window(valor,dst,mask)
 
   print(valor)
   
